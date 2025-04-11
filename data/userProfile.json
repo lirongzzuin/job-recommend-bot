@@ -1,0 +1,74 @@
+{
+  "experience": "3년차 백엔드 개발자",
+  "currentWork": {
+    "description": "중소 규모 IT 기업에서 풀스택 개발자로 근무 중이며, 주로 백엔드(Spring Boot, JPA) 개발을 담당하고 있음. 간단한 프론트엔드와 하이브리드 앱 개발도 병행함.",
+    "techStack": [
+      "Java",
+      "Spring Boot",
+      "JPA",
+      "MySQL",
+      "Cordova",
+      "JavaScript"
+    ],
+    "teamSize": "5명 이하의 소규모 팀"
+  },
+  "techStack": [
+    "Java",
+    "Spring Boot",
+    "JPA",
+    "MySQL",
+    "Redis",
+    "Kafka",
+    "WebSocket"
+  ],
+  "projects": [
+    {
+      "name": "FlashPay",
+      "summary": "결제 트래픽 집중 상황에서 안정적인 트랜잭션을 처리하는 백엔드 시스템을 개발. Kafka 기반 메시지 큐 처리, Redis 캐시 및 TTL 전략, 멱등성 처리 및 분산 락 구조 적용.",
+      "keywords": [
+        "결제 시스템",
+        "Kafka",
+        "Redis",
+        "Circuit Breaker",
+        "Idempotency",
+        "분산 락"
+      ]
+    },
+    {
+      "name": "FastChat",
+      "summary": "Kafka + Redis 기반의 실시간 채팅 시스템. WebSocket 통신, Redis Pub/Sub 구조, JWT 인증, 메시지 캐싱 및 채팅방 구조 설계를 포함.",
+      "keywords": [
+        "WebSocket",
+        "Kafka",
+        "Redis",
+        "JWT 인증",
+        "실시간 처리",
+        "채팅 시스템"
+      ]
+    }
+  ],
+  "preferredRoles": [
+    "백엔드",
+    "서버 개발자"
+  ],
+  "preferredLocations": [
+    "서울",
+    "재택"
+  ],
+  "preferredCompanies": [
+    "토스",
+    "머스트잇",
+    "센트비",
+    "기술 중심 스타트업"
+  ],
+  "salaryExpectation": {
+    "min": 5000,
+    "currency": "만원",
+    "type": "연봉"
+  },
+  "goals": [
+    "기술 중심 조직에서 실력 있는 동료들과 일하고 싶음",
+    "Kafka, Redis 기반 실시간/비동기 처리 시스템의 고도화를 경험하고 싶음",
+    "비즈니스 임팩트를 고려한 아키텍처 설계를 주도하는 백엔드 개발자로 성장하고 싶음"
+  ]
+}

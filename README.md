@@ -1,7 +1,8 @@
 # GPT 기반 채용공고 추천 Slack 봇
 
-이 프로젝트는 OpenAI의 GPT API를 활용하여 사용자의 기술 스택, 경력, 프로젝트 정보를 기반으로 채용공고와의 적합도를 분석하고, 그 중 점수가 높은 공고를 Slack으로 자동 전송하는 시스템입니다.  
-Node.js를 기반으로 하며, `.env` 설정을 통해 OpenAI API Key 및 Slack Webhook URL을 환경변수로 관리합니다.
+이 프로젝트는 OpenAI의 GPT API를 활용하여 사용자의 기술 스택, 경력, 프로젝트 정보를 기반으로 채용공고와의 적합도를 분석하고,  
+그 중 점수가 높은 공고를 Slack으로 자동 전송하는 시스템입니다.  
+Node.js 기반이며 `.env` 설정을 통해 OpenAI API Key 및 Slack Webhook URL을 환경변수로 관리합니다.
 
 ---
 
@@ -10,57 +11,63 @@ Node.js를 기반으로 하며, `.env` 설정을 통해 OpenAI API Key 및 Slack
 ```
 job-recommend-bot/
 ├── data/
-│   └── userProfile.json         # 사용자 정보 정의(JSON)
+│   └── userProfile.json             # 사용자 정보 정의(JSON)
 ├── gpt/
-│   └── matchEvaluator.js        # GPT API를 이용한 채용공고 적합도 평가
+│   └── matchEvaluator.js            # GPT API를 이용한 채용공고 적합도 평가
 ├── notify/
-│   └── slackNotifier.js         # Slack Webhook을 통해 메시지 전송
+│   └── slackNotifier.js             # Slack Webhook을 통한 메시지 전송
 ├── jobs/
-│   └── wanted.js                # 채용공고 수집 (크롤링 또는 API 요청)
-├── .env                         # GPT/Slack 환경 변수 저장
-├── .gitignore                   # 민감 파일 무시 설정
-├── main.js                      # 전체 실행 흐름 컨트롤러
-└── package.json                 # 프로젝트 메타 정보 및 의존성
+│   ├── wanted.js                    # 원티드 채용공고 크롤러 (Puppeteer 기반)
+│   ├── rocketpunch.js               # 로켓펀치 채용공고 크롤러 (Puppeteer 기반)
+│   └── programmers.js               # 프로그래머스 채용공고 크롤러 (Puppeteer 기반)
+├── .env                             # GPT/Slack 환경 변수 저장
+├── .gitignore
+├── main.js                          # 전체 실행 흐름 컨트롤러
+└── package.json
 ```
 
 ---
 
 ## ⚙️ 동작 방식
 
-1. `data/userProfile.json`에 사용자의 정보(기술 스택, 경력, 프로젝트, 선호 조건 등)를 저장합니다.
-2. `jobs/wanted.js`에서 채용공고를 수집하고 텍스트 형태로 정리합니다.
-3. 수집된 공고는 `gpt/matchEvaluator.js`로 전달되어, GPT를 통해 사용자와의 적합도를 분석합니다.
-4. 분석 결과가 일정 기준 점수 이상이면 `notify/slackNotifier.js`를 통해 Slack 채널로 전송합니다.
-5. 전체 흐름은 `main.js`에서 순차적으로 제어됩니다.
+1. `userProfile.json`에 기술 스택, 경력, 프로젝트, 선호 조건 등 사용자 정보를 저장합니다.
+2. `jobs/` 하위의 크롤러(wanted.js, rocketpunch.js, programmers.js)에서 채용공고를 최대 50건 수집합니다.
+3. 공고 제목/내용에 "시니어", "수석", "10년 이상" 등의 키워드를 포함한 고경력 공고는 크롤링 단계에서 제외됩니다.
+4. `matchEvaluator.js`에서 각 공고와 사용자 프로필을 GPT에 전달하여 적합도를 분석합니다.
+5. 점수가 일정 기준(예: 85점) 이상일 경우 Slack 채널로 알림을 전송합니다.
+6. 전체 흐름은 `main.js`에서 순차적으로 제어됩니다.
 
 ---
 
 ## 🔄 실행 흐름 요약
 
-1. `.env` 파일에 필요한 키를 설정합니다.
-2. `npm install`을 통해 의존 패키지를 설치합니다.
-3. `node main.js` 실행 시 전체 파이프라인이 동작하며 Slack으로 결과가 전송됩니다.
+1. `.env`에 API 키와 Webhook URL을 설정합니다.
+2. `npm install`로 의존성 패키지를 설치합니다.
+3. `node main.js` 실행 시 모든 플랫폼에서 공고를 수집하고, GPT 분석 후 Slack으로 전송합니다.
 
 ---
 
-## 📝 환경 변수 설정 (.env)
+## 📝 환경 변수 (.env)
 
 ```env
 OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 SLACK_WEBHOOK_URL=https://hooks.slack.com/services/xxxxxxxxxxxxxxxx
 ```
 
-※ `.env`는 `.gitignore`에 포함되어 있어야 하며 GitHub에 업로드되지 않도록 주의합니다.
+※ `.env`는 `.gitignore`에 포함되어야 하며 GitHub에 업로드되지 않도록 주의합니다.
 
 ---
 
 ## 📌 주요 기능
 
-- 사용자 프로필 기반 채용공고 적합도 평가
-- OpenAI GPT API를 활용한 분석 기반 매칭
-- 적합도 점수화 및 필터링
-- Slack Webhook을 이용한 자동 알림 기능
-- 구조화된 모듈 기반 설계로 유지보수 용이
+- 사용자 프로필 기반 채용공고 적합도 분석
+- GPT 기반 자연어 매칭 및 점수화
+- Slack 알림 자동 전송 (조건: 점수 기준 이상)
+- 3개 채용 플랫폼 크롤링:
+  - 원티드: 렌더링된 링크 기반 수집 + 필터링
+  - 로켓펀치: 포지션/회사명 추출 보완 + 필터링
+  - 프로그래머스: `.position-item` 기반 크롤링 + 필터링
+- 불필요한 시니어급 공고 제외 로직 포함 (정규식 기반 필터링)
 
 ---
 
@@ -69,6 +76,7 @@ SLACK_WEBHOOK_URL=https://hooks.slack.com/services/xxxxxxxxxxxxxxxx
 - Node.js
 - OpenAI GPT API (`openai` npm 패키지)
 - Slack Webhook
+- Puppeteer
 - dotenv
 - axios
 
@@ -76,11 +84,11 @@ SLACK_WEBHOOK_URL=https://hooks.slack.com/services/xxxxxxxxxxxxxxxx
 
 ## 🔧 향후 개선 방향
 
-- 다양한 채용 플랫폼에 대한 수집기 추가 (로켓펀치, 사람인 등)
-- 사용자 선호도 기반 가중치 설정 기능 추가
-- GPT 응답 템플릿 개선 및 요약 정보 강화
-- 분석 결과 저장용 데이터베이스 도입 (예: MongoDB)
-- 주기적 실행을 위한 스케줄링 기능 추가 (node-cron 또는 GitHub Actions)
+- 크롤링된 공고 분석 결과를 DB에 저장하여 중복 알림 방지
+- 주기적 실행을 위한 스케줄링 (node-cron or GitHub Actions)
+- Slack 메시지 템플릿 사용자 설정화
+- GPT 응답 내 요약 정리 및 공고별 핵심 키워드 추출
+- 프로필 기반 가중치 점수 설정 기능 (선호 지역, 연봉 등)
 
 ---
 
